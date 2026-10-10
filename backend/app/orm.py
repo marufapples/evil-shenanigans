@@ -63,3 +63,12 @@ class ChapterEvent(Base):
     notified: Mapped[bool] = mapped_column(default=False)
 
     manga: Mapped[Manga] = relationship()
+
+
+class ReadingSiteLink(Base):
+    __tablename__ = "reading_site_link"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    manga_id: Mapped[int] = mapped_column(ForeignKey("manga.id"), index=True)
+    host: Mapped[str] = mapped_column(String(200), index=True)
+    path_prefix: Mapped[str] = mapped_column(String(500))

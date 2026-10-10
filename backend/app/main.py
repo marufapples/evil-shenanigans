@@ -8,7 +8,7 @@ from app import jobs
 from app.db import run_migrations
 from app.notify import send_discord
 from app.scheduler import build_scheduler
-from app.routes import auth, chapters, library
+from app.routes import auth, chapters, library, progress
 
 
 @asynccontextmanager
@@ -33,6 +33,7 @@ app.add_middleware(
 app.include_router(library.router)
 app.include_router(auth.router)
 app.include_router(chapters.router)
+app.include_router(progress.router)
 
 
 @app.get("/health")
