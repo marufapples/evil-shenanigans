@@ -1,0 +1,9 @@
+{
+  "name": "Manga Tracker",
+  "short_name": "Manga",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121214",
+  "theme_color": "#5b5bd6",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

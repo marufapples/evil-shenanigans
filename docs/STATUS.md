@@ -1,0 +1,21 @@
+# Status
+
+- Phase 0 `chore/project-setup`: done (pushed).
+- Phase 1 `feat/library-db`: done. SQLite + Alembic, full AniList import (33 entries verified live), `/library` list/filter/search/sort, `/library/import`. Branch is stacked on phase 0.
+- Note: AniList username is `porkhamhennessy` (`porkhamsandwich` is the API client name, not a user).
+- Phase 2 `feat/anilist-oauth`: done (stacked on phase 1). OAuth login/callback/status/logout, PATCH /library/{id} marks dirty + pushes to AniList, POST /library/push retries. **Owner action:** open http://localhost:8000/auth/anilist/login once to authorize (consent cannot be done unattended). Redirect URI in the AniList developer settings must be exactly `http://localhost:8000/auth/anilist/callback`.
+- Phase 3 `feat/chapter-sources`: done (stacked). MangaDex source, exact AniList-link matching (fuzzy >=95 fallback), baseline-then-alert detection, /chapters/check and /chapters/events. Live: 23/33 matched, 10 have English chapters on MangaDex (others licensed/off-MangaDex; more sources are a future phase).
+- Phase 4 `feat/notifications`: done (stacked). Discord notifier (batched, marked sent only on success), APScheduler jobs with jitter (import 30m, push 10m, chapters 30m), one alert per failure streak, /status, /notify/test (verified live: test message delivered).
+- Phase 5 `feat/progress-sync`: done (stacked). POST /progress (token-protected), site-URL -> manga links learned automatically, forward-only updates, Tampermonkey userscript at GET /progress/userscript, bookmarklet-style GET /progress/report. Owner action: install the userscript from http://localhost:8000/progress/userscript in Tampermonkey.
+- Phase 6 `feat/frontend-library`: done (stacked). React+Vite library grid (status tabs, search, sort, unread badges, +1 button), Updates feed. Verified in browser against real data (29 reading).
+- Port note: ports 8000 are taken on this Mac by your own `python -m http.server 8000` and `tradio/serve.py`. I did not stop them. Either stop those before running the API, or run the API elsewhere (e.g. 8765) and set `VITE_API_URL` + update the AniList redirect URI to match.
+- Phase 7 `feat/frontend-settings`: done (stacked). Settings page: AniList connect/disconnect, import/push now, check chapters, test Discord, userscript link, job status, manual MangaDex matching (GET/PUT /chapters/matches, re-baselines on change). Verified in browser.
+- Phase 8 `chore/polish`: done (stacked). README, `run.sh`, PWA manifest + icon, removed deprecated `utcnow`, cleaned unused imports. 28 backend + 5 frontend tests passing.
+
+## Merge order
+Branches are stacked; each PR targets the previous branch. Merge in order: `chore/project-setup` → `feat/library-db` → `feat/anilist-oauth` → `feat/chapter-sources` → `feat/notifications` → `feat/progress-sync` → `feat/frontend-library` → `feat/frontend-settings` → `chore/polish`. Or merge only `chore/polish` into `main`, which contains all of them.
+
+## Owner to-dos
+1. Open the PRs (links in the final message; `gh` isn't installed).
+2. Free port 8000 (or use `API_PORT`), run `./run.sh`, then Settings → Connect AniList.
+3. Install the userscript (optional).
