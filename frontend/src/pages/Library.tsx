@@ -77,7 +77,7 @@ export default function Library() {
           <option value="score">Score</option>
         </select>
       </div>
-      {error && <p className="error">Could not reach the backend ({error}). Is it running on port 8000?</p>}
+      {error && <p className="error">The tracker server isn’t running ({error}). Start everything with ./run.sh in the project folder.</p>}
       {!error && entries.length === 0 && <p className="empty">Nothing here yet.</p>}
       <div className="grid">
         {entries.map((e) => (

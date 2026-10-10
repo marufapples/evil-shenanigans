@@ -60,7 +60,7 @@ def userscript(db: Session = Depends(get_db)):
   if (!m.test(location.pathname) && !m.test(document.title)) return;
   GM_xmlhttpRequest({{
     method: "POST",
-    url: "http://localhost:8000/progress?token={token}",
+    url: "http://localhost:8765/progress?token={token}",
     headers: {{ "Content-Type": "application/json" }},
     data: JSON.stringify({{ url: location.href, title: document.title }}),
   }});

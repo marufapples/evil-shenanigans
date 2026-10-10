@@ -1,4 +1,4 @@
-export const API = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+export const API = import.meta.env.VITE_API_URL ?? 'http://localhost:8765'
 
 export type ListStatus = 'CURRENT' | 'PLANNING' | 'COMPLETED' | 'DROPPED' | 'PAUSED' | 'REPEATING'
 

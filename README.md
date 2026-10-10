@@ -9,10 +9,10 @@ cp backend/.env.example backend/.env   # then fill it in (first time only)
 ./run.sh
 ```
 
-Open http://localhost:5173. The API runs on http://localhost:8000 (`API_PORT=8765 ./run.sh` if 8000 is taken).
+Open http://localhost:5173. The API runs on http://localhost:8765.
 
 ## First-time setup
-1. **AniList app:** at https://anilist.co/settings/developer, set the redirect URI to `http://localhost:8000/auth/anilist/callback`. Put the client id/secret in `backend/.env`.
+1. **AniList app:** at https://anilist.co/settings/developer, set the redirect URI to `http://localhost:8765/auth/anilist/callback`. Put the client id/secret in `backend/.env`.
 2. **Connect:** Settings → *Connect AniList*, approve, and you're back in the app.
 3. **Import:** Settings → *Import from AniList now* (it also runs every 30 minutes).
 4. **Reading-site sync (optional):** install Tampermonkey, then open Settings → *the userscript*. Opening a chapter page on any site reports it. The first time a site is seen, the series is matched by title; after that, by URL.

@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     anilist_client_id: str = ""
     anilist_client_secret: str = ""
-    anilist_redirect_uri: str = "http://localhost:8000/auth/anilist/callback"
+    anilist_redirect_uri: str = "http://localhost:8765/auth/anilist/callback"
     anilist_username: str = ""
     discord_webhook_url: str = ""
     database_url: str = f"sqlite:///{BACKEND_DIR / 'data' / 'tracker.db'}"
