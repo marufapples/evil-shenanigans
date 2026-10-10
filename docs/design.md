@@ -11,3 +11,5 @@ I am aiming to resolve this by creating a tracker, similar to AniList and MyAnim
 - Add notifiers for new chapters on what I'm currently reading
 
 ## Decision Log
+
+- 2026-10-10: Web app (React + Vite) over native iOS. Discord webhook for notifications. Two-way AniList sync via OAuth. SQLite for storage. One branch + PR per phase; owner reviews and merges.
