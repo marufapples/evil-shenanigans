@@ -1,18 +1,18 @@
 import logging
-from datetime import datetime
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.anilist import AniListError, save_entry
+from app.anilist import save_entry
 from app.orm import LibraryEntry, OAuthToken
+from app.timeutil import utcnow
 
 log = logging.getLogger(__name__)
 
 
 def get_token(db: Session) -> OAuthToken | None:
     tok = db.scalar(select(OAuthToken).where(OAuthToken.provider == "anilist"))
-    if tok and tok.expires_at and tok.expires_at < datetime.utcnow():
+    if tok and tok.expires_at and tok.expires_at < utcnow():
         return None
     return tok
 

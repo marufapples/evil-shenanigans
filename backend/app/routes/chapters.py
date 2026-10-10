@@ -1,4 +1,3 @@
-from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -9,6 +8,7 @@ from app.db import get_db
 from app.detect import TRACKED_STATUSES, detect_new_chapters
 from app.orm import ChapterEvent, LibraryEntry, Manga
 from app.sources.mangadex import MangaDexSource
+from app.timeutil import utcnow
 
 router = APIRouter(prefix="/chapters")
 
@@ -46,6 +46,6 @@ def set_match(manga_id: int, body: MatchIn, db: Session = Depends(get_db)):
         raise HTTPException(404, "manga not found")
     manga.mangadex_id = body.mangadex_id
     manga.latest_known_chapter = None  # re-baseline so a manual change never fires a false alert
-    manga.source_checked_at = datetime.utcnow()
+    manga.source_checked_at = utcnow()
     db.commit()
     return {"id": manga.id, "mangadex_id": manga.mangadex_id}

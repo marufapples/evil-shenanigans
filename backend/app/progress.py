@@ -1,6 +1,5 @@
 import re
 import secrets
-from datetime import datetime
 from urllib.parse import urlparse
 
 from rapidfuzz import fuzz
@@ -8,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.orm import LibraryEntry, Manga, OAuthToken, ReadingSiteLink
+from app.timeutil import utcnow
 
 CHAPTER_RE = re.compile(r"(?:chapter|chap|ch|episode|ep)[\s._/-]*(\d+(?:[._-]\d+)?)", re.I)
 FUZZY_MIN = 90
@@ -77,7 +77,7 @@ def apply_progress(db: Session, manga: Manga, chapter: float) -> LibraryEntry | 
     entry.progress = n
     if entry.list_status in ("PLANNING", "PAUSED", "DROPPED"):
         entry.list_status = "CURRENT"
-    entry.local_updated_at = datetime.utcnow()
+    entry.local_updated_at = utcnow()
     entry.dirty = True
     db.commit()
     return entry

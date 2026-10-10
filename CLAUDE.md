@@ -5,6 +5,7 @@ Personal manga/manhwa/manhua tracker for one owner (AniList user `porkhamhenness
 Design: [docs/design.md](docs/design.md). Plan and phases: [docs/PLAN.md](docs/PLAN.md). Read both before design decisions. Status log: [docs/STATUS.md](docs/STATUS.md); update it after each phase.
 
 ## Commands
+- Run everything: `./run.sh` (`API_PORT=8765 ./run.sh` if 8000 is taken; port 8000 is often used by other local servers on this Mac)
 - Backend setup: `cd backend && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`
 - Backend tests: `cd backend && .venv/bin/pytest`
 - Backend dev server: `cd backend && .venv/bin/uvicorn app.main:app --reload`

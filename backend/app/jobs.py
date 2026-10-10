@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 
 from app.anilist import fetch_library
 from app.config import get_settings
@@ -9,6 +8,7 @@ from app.importer import upsert_library
 from app.notify import notify_new_chapters, send_discord
 from app.sources.mangadex import MangaDexSource
 from app.sync import push_dirty
+from app.timeutil import utcnow
 
 log = logging.getLogger(__name__)
 
@@ -20,10 +20,10 @@ _alerted: set[str] = set()
 async def _run(name: str, fn):
     try:
         result = await fn()
-        STATE[name] = {"last_run": datetime.utcnow(), "ok": True, "message": str(result)}
+        STATE[name] = {"last_run": utcnow(), "ok": True, "message": str(result)}
         _alerted.discard(name)
     except Exception as e:
-        STATE[name] = {"last_run": datetime.utcnow(), "ok": False, "message": type(e).__name__}
+        STATE[name] = {"last_run": utcnow(), "ok": False, "message": type(e).__name__}
         log.warning("job %s failed: %s", name, type(e).__name__)
         if name not in _alerted:  # alert once per failure streak, never loop
             _alerted.add(name)

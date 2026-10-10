@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.orm import ChapterEvent, LibraryEntry, Manga
 from app.sources.base import ChapterSource
+from app.timeutil import utcnow
 
 log = logging.getLogger(__name__)
 RECHECK_MATCH_AFTER = timedelta(days=7)
@@ -18,7 +19,7 @@ async def detect_new_chapters(db: Session, source: ChapterSource, now: datetime 
 
     First sighting of a series only sets the baseline (no alert), so import never floods notifications.
     """
-    now = now or datetime.utcnow()
+    now = now or utcnow()
     stmt = (
         select(Manga).join(LibraryEntry)
         .where(LibraryEntry.list_status.in_(TRACKED_STATUSES), Manga.publishing_status.in_(ACTIVE_PUBLISHING))

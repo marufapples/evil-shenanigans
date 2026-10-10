@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
@@ -9,6 +9,7 @@ from app.config import get_settings
 from app.db import get_db
 from app.orm import OAuthToken
 from app.sync import get_token
+from app.timeutil import utcnow
 
 router = APIRouter(prefix="/auth/anilist")
 
@@ -31,7 +32,7 @@ async def callback(code: str, db: Session = Depends(get_db)):
         raise HTTPException(502, str(e))
     row = db.query(OAuthToken).filter_by(provider="anilist").one_or_none() or OAuthToken(provider="anilist")
     row.access_token = tok["access_token"]
-    row.expires_at = datetime.utcnow() + timedelta(seconds=tok.get("expires_in", 0)) if tok.get("expires_in") else None
+    row.expires_at = utcnow() + timedelta(seconds=tok.get("expires_in", 0)) if tok.get("expires_in") else None
     row.account_name = viewer["name"]
     db.add(row)
     db.commit()

@@ -1,4 +1,3 @@
-from datetime import datetime
 
 from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -12,6 +11,7 @@ from app.importer import upsert_library
 from app.models import LibraryEntryOut, ListStatus
 from app.orm import LibraryEntry, Manga
 from app.sync import push_dirty, push_entry
+from app.timeutil import utcnow
 
 router = APIRouter()
 
@@ -72,7 +72,7 @@ async def update_entry(entry_id: int, patch: EntryPatch, db: Session = Depends(g
         raise HTTPException(404, "entry not found")
     for k, v in patch.model_dump(exclude_unset=True).items():
         setattr(entry, k, v.value if isinstance(v, ListStatus) else v)
-    entry.local_updated_at = datetime.utcnow()
+    entry.local_updated_at = utcnow()
     entry.dirty = True
     db.commit()
     await push_entry(db, entry)  # best effort; stays dirty if not connected/offline
