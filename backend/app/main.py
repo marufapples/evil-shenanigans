@@ -1,16 +1,29 @@
-from fastapi import FastAPI, HTTPException
-from app.anilist import fetch_reading_list
-from app.models import MangaEntry
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="Manga Tracker")
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.config import get_settings
+from app.db import run_migrations
+from app.routes import library
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    run_migrations()
+    yield
+
+
+app = FastAPI(title="Manga Tracker", lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[get_settings().frontend_url],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.include_router(library.router)
+
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
-
-@app.get("/users/{username}/reading", response_model=list[MangaEntry])
-async def get_reading(username: str):
-    try:
-        return await fetch_reading_list(username)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))

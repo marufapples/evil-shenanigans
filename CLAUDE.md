@@ -1,6 +1,6 @@
 # Manga Tracker
 
-Personal manga/manhwa/manhua tracker for one owner (AniList user `porkhamsandwich`). Runs locally: FastAPI + SQLite backend, React + Vite + TypeScript frontend. Free only; no cloud, no paid APIs.
+Personal manga/manhwa/manhua tracker for one owner (AniList user `porkhamhennessy`). Runs locally: FastAPI + SQLite backend, React + Vite + TypeScript frontend. Free only; no cloud, no paid APIs.
 
 Design: [docs/design.md](docs/design.md). Plan and phases: [docs/PLAN.md](docs/PLAN.md). Read both before design decisions. Status log: [docs/STATUS.md](docs/STATUS.md); update it after each phase.
 
