@@ -47,4 +47,28 @@ export const api = {
   patch: (id: number, body: Partial<Pick<Entry, 'progress' | 'list_status' | 'score'>>) =>
     req<Entry>(`/library/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
   events: () => req<ChapterEvent[]>('/chapters/events'),
+  authStatus: () => req<{ connected: boolean; account: string | null }>('/auth/anilist/status'),
+  logout: () => req<{ connected: boolean }>('/auth/anilist/logout', { method: 'DELETE' }),
+  importNow: () => req<Record<string, number>>('/library/import', { method: 'POST' }),
+  pushNow: () => req<{ pushed: number; pending: number }>('/library/push', { method: 'POST' }),
+  checkChapters: () => req<{ new: { manga: string; chapter: number }[] }>('/chapters/check', { method: 'POST' }),
+  testNotify: () => req<{ sent: boolean }>('/notify/test', { method: 'POST' }),
+  jobs: () => req<Record<string, { last_run: string; ok: boolean; message: string }>>('/status'),
+  matches: () => req<Match[]>('/chapters/matches'),
+  setMatch: (id: number, mangadex_id: string | null) =>
+    req<{ id: number }>(`/chapters/matches/${id}`, { method: 'PUT', body: JSON.stringify({ mangadex_id }) }),
+}
+
+export interface Match {
+  id: number
+  title: string
+  publishing_status: string
+  mangadex_id: string | null
+  latest_known_chapter: number | null
+}
+
+/** Accepts a bare MangaDex id or a mangadex.org/title/<id>/... URL. */
+export function parseMangaDexId(input: string): string | null {
+  const m = input.trim().match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i)
+  return m ? m[0].toLowerCase() : null
 }
