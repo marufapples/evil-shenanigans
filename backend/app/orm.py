@@ -38,3 +38,13 @@ class LibraryEntry(Base):
     dirty: Mapped[bool] = mapped_column(default=False)
 
     manga: Mapped[Manga] = relationship(back_populates="entry")
+
+
+class OAuthToken(Base):
+    __tablename__ = "oauth_token"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    provider: Mapped[str] = mapped_column(String(32), unique=True)
+    access_token: Mapped[str] = mapped_column(String(4000))
+    expires_at: Mapped[datetime | None]
+    account_name: Mapped[str | None] = mapped_column(String(200))

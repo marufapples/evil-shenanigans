@@ -70,3 +70,43 @@ async def fetch_library(username: str) -> list[dict]:
             if not coll["hasNextChunk"]:
                 return list(found.values())
             chunk += 1
+
+
+OAUTH_AUTHORIZE = "https://anilist.co/api/v2/oauth/authorize"
+OAUTH_TOKEN = "https://anilist.co/api/v2/oauth/token"
+
+VIEWER_QUERY = "query { Viewer { id name } }"
+SAVE_MUTATION = """
+mutation ($mediaId: Int, $status: MediaListStatus, $progress: Int, $score: Int, $notes: String) {
+  SaveMediaListEntry(mediaId: $mediaId, status: $status, progress: $progress, scoreRaw: $score, notes: $notes) { id progress status }
+}"""
+
+
+def authorize_url(client_id: str, redirect_uri: str) -> str:
+    from urllib.parse import urlencode
+
+    return f"{OAUTH_AUTHORIZE}?{urlencode({'client_id': client_id, 'redirect_uri': redirect_uri, 'response_type': 'code'})}"
+
+
+async def exchange_code(client_id: str, client_secret: str, redirect_uri: str, code: str) -> dict:
+    async with httpx.AsyncClient(timeout=20) as client:
+        resp = await client.post(OAUTH_TOKEN, json={
+            "grant_type": "authorization_code", "client_id": client_id, "client_secret": client_secret,
+            "redirect_uri": redirect_uri, "code": code,
+        })
+    if resp.status_code != 200:
+        raise AniListError("AniList rejected the authorization code")  # never include the response body
+    return resp.json()
+
+
+async def fetch_viewer(token: str) -> dict:
+    async with httpx.AsyncClient(timeout=20) as client:
+        data = await _post(client, {"query": VIEWER_QUERY}, {"Authorization": f"Bearer {token}"})
+    return data["Viewer"]
+
+
+async def save_entry(token: str, media_id: int, status: str, progress: int, score: float | None, notes: str | None) -> None:
+    variables = {"mediaId": media_id, "status": status, "progress": progress,
+                 "score": round((score or 0) * 10), "notes": notes}
+    async with httpx.AsyncClient(timeout=20) as client:
+        await _post(client, {"query": SAVE_MUTATION, "variables": variables}, {"Authorization": f"Bearer {token}"})
