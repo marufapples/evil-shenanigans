@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     anilist_username: str = ""
     discord_webhook_url: str = ""
     database_url: str = f"sqlite:///{BACKEND_DIR / 'data' / 'tracker.db'}"
+    scheduler_enabled: bool = True
     frontend_url: str = "http://localhost:5173"
 
 
