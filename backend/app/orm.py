@@ -19,6 +19,7 @@ class Manga(Base):
     country: Mapped[str | None] = mapped_column(String(8))
     format: Mapped[str | None] = mapped_column(String(32))
     mangadex_id: Mapped[str | None] = mapped_column(String(64))
+    source_checked_at: Mapped[datetime | None]
     latest_known_chapter: Mapped[float | None]
 
     entry: Mapped["LibraryEntry | None"] = relationship(back_populates="manga", uselist=False, cascade="all, delete-orphan")
@@ -48,3 +49,17 @@ class OAuthToken(Base):
     access_token: Mapped[str] = mapped_column(String(4000))
     expires_at: Mapped[datetime | None]
     account_name: Mapped[str | None] = mapped_column(String(200))
+
+
+class ChapterEvent(Base):
+    __tablename__ = "chapter_event"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    manga_id: Mapped[int] = mapped_column(ForeignKey("manga.id"), index=True)
+    chapter: Mapped[float]
+    source: Mapped[str] = mapped_column(String(32))
+    url: Mapped[str | None] = mapped_column(String(1000))
+    detected_at: Mapped[datetime]
+    notified: Mapped[bool] = mapped_column(default=False)
+
+    manga: Mapped[Manga] = relationship()
